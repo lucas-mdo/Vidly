@@ -22,6 +22,7 @@ namespace Vidly.Controllers
         // GET: Customers
         public ViewResult Index()
         {
+            //Eager Loading
             var customers = _context.Customers.Include(c => c.MembershipType).ToList();
 
             return View(customers);
@@ -31,6 +32,7 @@ namespace Vidly.Controllers
         [Route("customers/details/{id}")]
         public ActionResult Details(int id)
         {
+            //Eager Loading
             var customer = _context.Customers.Include(c => c.MembershipType).SingleOrDefault(c => c.Id == id);
 
             if (customer == null)
