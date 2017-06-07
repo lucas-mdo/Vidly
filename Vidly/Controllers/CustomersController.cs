@@ -37,6 +37,20 @@ namespace Vidly.Controllers
         //Use Model Binding (as every form-data is prefixed with Customer, Customer can be used instead of CustomerFormViewModel)
         public ActionResult Save(Customer customer)
         {
+            //Validating fields
+            if (!ModelState.IsValid)
+            {
+                //Keep filled data in the page
+                var viewModel = new CustomerFormViewModel
+                {
+                    Customer = customer,
+                    MembershipTypes = _context.MembershipTypes.ToList()
+                };
+
+                //Reload the form page with validation messages
+                return View("CustomerForm", viewModel);
+            }
+
             if (customer.Id == 0)
             {
                 //New customer, add customer to db
