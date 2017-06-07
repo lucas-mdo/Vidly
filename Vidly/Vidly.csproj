@@ -236,6 +236,10 @@
     <Compile Include="Migrations\201705301853099_PopulateGenres.Designer.cs">
       <DependentUpon>201705301853099_PopulateGenres.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201706071225551_DeleteDuplicatedGenreRecords.cs" />
+    <Compile Include="Migrations\201706071225551_DeleteDuplicatedGenreRecords.Designer.cs">
+      <DependentUpon>201706071225551_DeleteDuplicatedGenreRecords.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Customer.cs" />
@@ -247,6 +251,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\CustomerFormViewModel.cs" />
+    <Compile Include="ViewModels\MovieFormViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-lumen.css" />
@@ -312,6 +317,7 @@
     <Content Include="Views\Shared\_NavBar.cshtml" />
     <Content Include="Views\Movies\Details.cshtml" />
     <Content Include="Views\Customers\CustomerForm.cshtml" />
+    <Content Include="Views\Movies\MoviesForm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -361,6 +367,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201705301853099_PopulateGenres.resx">
       <DependentUpon>201705301853099_PopulateGenres.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706071225551_DeleteDuplicatedGenreRecords.resx">
+      <DependentUpon>201706071225551_DeleteDuplicatedGenreRecords.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
