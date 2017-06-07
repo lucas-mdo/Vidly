@@ -9,12 +9,13 @@ namespace Vidly.Controllers.Api
 {
     public class CustomersController : ApiController
     {
-        private ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
 
         public CustomersController()
         {
             _context = new ApplicationDbContext();
         }
+
         //GET /api/customers
         public IHttpActionResult GetCustomers()
         {
@@ -34,34 +35,34 @@ namespace Vidly.Controllers.Api
 
         //POST /api/customers
         [HttpPost]
-        public IHttpActionResult CreateCustomer(CustomerDto customerDto)
+        public IHttpActionResult CreateCustomer(CustomerDto movieDto)
         {
             //Validate
             if (!ModelState.IsValid)
                 return BadRequest();
 
             //Map to domain object
-            var customer = Mapper.Map<CustomerDto, Customer>(customerDto);
+            var customer = Mapper.Map<CustomerDto, Customer>(movieDto);
             //Mark as added
             _context.Customers.Add(customer);
             //Save
             _context.SaveChanges();
 
             //Set Id of Dto as the newly created domain Customer
-            customerDto.Id = customer.Id;
+            movieDto.Id = customer.Id;
 
-            return Created(new Uri(Request.RequestUri + "/" + customer.Id), customerDto);
+            return Created(new Uri(Request.RequestUri + "/" + customer.Id), movieDto);
         }
 
         //PUT /api/customers/{id}
         [HttpPut]
-        public IHttpActionResult UpdateCustomer(int id, CustomerDto customerDto)
+        public IHttpActionResult UpdateCustomer(int id, CustomerDto movieDto)
         {
             //Validate
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            //Query for existing customerDto in db
+            //Query for existing movieDto in db
             var customerInDb = _context.Customers.SingleOrDefault(c => c.Id == id);
             
             //Check for invalid id
@@ -69,7 +70,7 @@ namespace Vidly.Controllers.Api
                 return NotFound();
 
             //Map to existing object in context (enable tracking changes)
-            Mapper.Map(customerDto, customerInDb);
+            Mapper.Map(movieDto, customerInDb);
             
             _context.SaveChanges();
 
@@ -80,7 +81,7 @@ namespace Vidly.Controllers.Api
         [HttpDelete]
         public IHttpActionResult DeleteCustomer(int id)
         {
-            //Query for existing customerDto in db
+            //Query for existing movieDto in db
             var customerInDb = _context.Customers.SingleOrDefault(c => c.Id == id);
 
             //Check for invalid id
