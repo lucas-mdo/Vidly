@@ -23,6 +23,7 @@
                                 new SelectList(Model.MembershipTypes, "Id", "Name"),
                                 "- Select Membership Type -",
                                 new {@class = "form-control"})
+        @Html.ValidationMessageFor(m => m.Customer.MembershipTypeId)
     </div>
     <div class="checkbox">
         @Html.CheckBoxFor(m => m.Customer.IsSubscribedToNewsletter) Subscribed to Newsletter?
