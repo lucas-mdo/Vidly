@@ -14,6 +14,7 @@ namespace Vidly.Models
                 customer.MembershipTypeId == MembershipType.PayAsYouGo)
                 return ValidationResult.Success;
 
+            //Birthdate is required as customer needs to be at least 18
             if (customer.Birthdate == null)
                 return new ValidationResult("Birthdate is required.");
 
