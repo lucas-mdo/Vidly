@@ -22,3 +22,13 @@ select,
 textarea {
     max-width: 280px;
 }
+
+/* Set color of validation messages to red */
+.field-validation-error {
+    color: red;
+}
+
+/* Set border of the mistakenly filled input field to red */
+.input-validation-error {
+    border: 2px solid red;
+}
