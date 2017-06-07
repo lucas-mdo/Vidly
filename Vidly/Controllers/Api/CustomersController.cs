@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Net;
 using System.Web.Http;
+using AutoMapper;
+using Vidly.Dtos;
 using Vidly.Models;
 
 namespace Vidly.Controllers.Api
@@ -15,54 +17,60 @@ namespace Vidly.Controllers.Api
             _context = new ApplicationDbContext();
         }
         //GET /api/customers
-        public IEnumerable<Customer> GetCustomers()
+        public IEnumerable<CustomerDto> GetCustomers()
         {
-            return _context.Customers.ToList();
+            return _context.Customers.ToList().Select(Mapper.Map<Customer, CustomerDto>);
         }
 
         //GET /api/customers/{id}
-        public Customer GetCustomer(int id)
+        public CustomerDto GetCustomer(int id)
         {
             var customer = _context.Customers.SingleOrDefault(c => c.Id == id);
 
             if (customer == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
-            return customer;
+            return Mapper.Map<Customer, CustomerDto>(customer);
         }
 
         //POST /api/customers
         [HttpPost]
-        public Customer CreateCustomer(Customer customer)
-        {
-            if (!ModelState.IsValid)
-                throw new HttpResponseException(HttpStatusCode.BadRequest);
-
-            _context.Customers.Add(customer);
-            _context.SaveChanges();
-
-            return customer;
-        }
-
-        //PUT /api/customers/{id}
-        [HttpPut]
-        public void UpdateCustomer(int id, Customer customer)
+        public CustomerDto CreateCustomer(CustomerDto customerDto)
         {
             //Validate
             if (!ModelState.IsValid)
                 throw new HttpResponseException(HttpStatusCode.BadRequest);
-            //Query for existing customer in db
+
+            //Map to domain object
+            var customer = Mapper.Map<CustomerDto, Customer>(customerDto);
+            //Mark as added
+            _context.Customers.Add(customer);
+            //Save
+            _context.SaveChanges();
+
+            //Set Id of Dto as the newly created domain Customer
+            customerDto.Id = customer.Id;
+
+            return customerDto;
+        }
+
+        //PUT /api/customers/{id}
+        [HttpPut]
+        public void UpdateCustomer(int id, CustomerDto customerDto)
+        {
+            //Validate
+            if (!ModelState.IsValid)
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
+            //Query for existing customerDto in db
             var customerInDb = _context.Customers.SingleOrDefault(c => c.Id == id);
             
             //Check for invalid id
             if (customerInDb == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
-            customerInDb.Name = customer.Name;
-            customerInDb.Birthdate = customer.Birthdate;
-            customerInDb.IsSubscribedToNewsletter = customer.IsSubscribedToNewsletter;
-            customerInDb.MembershipTypeId = customer.MembershipTypeId;
-
+            //Map to existing object in context (enable tracking changes)
+            Mapper.Map(customerDto, customerInDb);
+            
             _context.SaveChanges();
         }
 
@@ -70,7 +78,7 @@ namespace Vidly.Controllers.Api
         [HttpDelete]
         public void DeleteCustomer(int id)
         {
-            //Query for existing customer in db
+            //Query for existing customerDto in db
             var customerInDb = _context.Customers.SingleOrDefault(c => c.Id == id);
 
             //Check for invalid id
