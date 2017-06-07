@@ -23,17 +23,18 @@ namespace Vidly.Controllers
         public ActionResult New()
         {
             var membershipTypes = _context.MembershipTypes.ToList();
-            var viewModel = new NewCustomerViewModel()
+            var viewModel = new CustomerFormViewModel()
             {
                 MembershipTypes = membershipTypes
             };
 
-            return View(viewModel);
+            //Override to NOT go to New
+            return View("CustomerForm", viewModel);
         }
 
         //Ensure it is only acessible via POST
         [HttpPost]
-        //Use Model Binding (as every form-data is prefixed with Customer, Customer can be used instead of NewCustomerViewModel)
+        //Use Model Binding (as every form-data is prefixed with Customer, Customer can be used instead of CustomerFormViewModel)
         public ActionResult Create(Customer customer)
         {
             //Add customer to dbcontext
@@ -66,5 +67,21 @@ namespace Vidly.Controllers
             return View(customer);
         }
 
+        public ActionResult Edit(int id)
+        {
+            var customer = _context.Customers.SingleOrDefault(c => c.Id == id);
+
+            if (customer == null)
+                return HttpNotFound();
+
+            var viewModel = new CustomerFormViewModel
+            {
+                Customer = customer,
+                MembershipTypes = _context.MembershipTypes.ToList()
+            };
+
+            //Override to NOT go to Edit
+            return View("CustomerForm", viewModel);
+        }
     }
 }
