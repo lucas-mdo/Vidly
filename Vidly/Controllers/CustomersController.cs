@@ -35,6 +35,8 @@ namespace Vidly.Controllers
 
         //Ensure it is only acessible via POST
         [HttpPost]
+        //Security measure - Prevent CSRF attacks
+        [ValidateAntiForgeryToken]
         //Use Model Binding (as every form-data is prefixed with Customer, Customer can be used instead of CustomerFormViewModel)
         public ActionResult Save(Customer customer)
         {
