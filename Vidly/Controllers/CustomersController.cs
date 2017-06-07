@@ -35,10 +35,24 @@ namespace Vidly.Controllers
         //Ensure it is only acessible via POST
         [HttpPost]
         //Use Model Binding (as every form-data is prefixed with Customer, Customer can be used instead of CustomerFormViewModel)
-        public ActionResult Create(Customer customer)
+        public ActionResult Save(Customer customer)
         {
-            //Add customer to dbcontext
-            _context.Customers.Add(customer);
+            if (customer.Id == 0)
+            {
+                //New customer, add customer to db
+                _context.Customers.Add(customer);
+            }
+            else
+            {
+                //Update customer to db
+                var customerInDb = _context.Customers.Single(c => c.Id == customer.Id);
+
+                //Update manually (security reasons)
+                customerInDb.Name = customer.Name;
+                customerInDb.Birthdate = customer.Birthdate;
+                customerInDb.MembershipTypeId = customer.MembershipTypeId;
+                customerInDb.IsSubscribedToNewsletter = customer.IsSubscribedToNewsletter;
+            }
             //Persist all changes
             _context.SaveChanges();
 
