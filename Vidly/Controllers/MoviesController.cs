@@ -77,9 +77,25 @@ namespace Vidly.Controllers
 
         //Ensure it is only acessible via POST
         [HttpPost]
+        //Security measure - Prevent CSRF attacks
+        [ValidateAntiForgeryToken]
         //Use Model Binding (as every form-data is prefixed with Customer, Customer can be used instead of CustomerFormViewModel)
         public ActionResult Save(Movie movie)
         {
+            //Validating fields
+            if (!ModelState.IsValid)
+            {
+                //Keep filled data in the page
+                var viewModel = new MovieFormViewModel
+                {
+                    Movie = movie,
+                    Genres = _context.Genres.ToList()
+                };
+
+                //Reload the form page with validation messages
+                return View("MoviesForm", viewModel);
+            }
+
             if (movie.Id == 0)
             {
                 movie.DateAdded = DateTime.Now;
