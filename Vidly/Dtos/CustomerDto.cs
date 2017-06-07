@@ -14,7 +14,7 @@ namespace Vidly.Dtos
 
         public bool IsSubscribedToNewsletter { get; set; }
 
-        [Min18YearsIfAMember]
+        //[Min18YearsIfAMember] Need to remove the Save action, currently there are 2 ways to create a customer
         public DateTime? Birthdate { get; set; }
 
         public byte MembershipTypeId { get; set; }
