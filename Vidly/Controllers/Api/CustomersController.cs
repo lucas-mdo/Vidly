@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Net;
 using System.Web.Http;
 using AutoMapper;
 using Vidly.Dtos;
@@ -17,29 +16,29 @@ namespace Vidly.Controllers.Api
             _context = new ApplicationDbContext();
         }
         //GET /api/customers
-        public IEnumerable<CustomerDto> GetCustomers()
+        public IHttpActionResult GetCustomers()
         {
-            return _context.Customers.ToList().Select(Mapper.Map<Customer, CustomerDto>);
+            return Ok(_context.Customers.ToList().Select(Mapper.Map<Customer, CustomerDto>));
         }
 
         //GET /api/customers/{id}
-        public CustomerDto GetCustomer(int id)
+        public IHttpActionResult GetCustomer(int id)
         {
             var customer = _context.Customers.SingleOrDefault(c => c.Id == id);
 
             if (customer == null)
-                throw new HttpResponseException(HttpStatusCode.NotFound);
+                return NotFound();
 
-            return Mapper.Map<Customer, CustomerDto>(customer);
+            return Ok(Mapper.Map<Customer, CustomerDto>(customer));
         }
 
         //POST /api/customers
         [HttpPost]
-        public CustomerDto CreateCustomer(CustomerDto customerDto)
+        public IHttpActionResult CreateCustomer(CustomerDto customerDto)
         {
             //Validate
             if (!ModelState.IsValid)
-                throw new HttpResponseException(HttpStatusCode.BadRequest);
+                return BadRequest();
 
             //Map to domain object
             var customer = Mapper.Map<CustomerDto, Customer>(customerDto);
@@ -51,44 +50,49 @@ namespace Vidly.Controllers.Api
             //Set Id of Dto as the newly created domain Customer
             customerDto.Id = customer.Id;
 
-            return customerDto;
+            return Created(new Uri(Request.RequestUri + "/" + customer.Id), customerDto);
         }
 
         //PUT /api/customers/{id}
         [HttpPut]
-        public void UpdateCustomer(int id, CustomerDto customerDto)
+        public IHttpActionResult UpdateCustomer(int id, CustomerDto customerDto)
         {
             //Validate
             if (!ModelState.IsValid)
-                throw new HttpResponseException(HttpStatusCode.BadRequest);
+                return BadRequest();
+
             //Query for existing customerDto in db
             var customerInDb = _context.Customers.SingleOrDefault(c => c.Id == id);
             
             //Check for invalid id
             if (customerInDb == null)
-                throw new HttpResponseException(HttpStatusCode.NotFound);
+                return NotFound();
 
             //Map to existing object in context (enable tracking changes)
             Mapper.Map(customerDto, customerInDb);
             
             _context.SaveChanges();
+
+            return Ok();
         }
 
         //DELETE /api/customers/{id}
         [HttpDelete]
-        public void DeleteCustomer(int id)
+        public IHttpActionResult DeleteCustomer(int id)
         {
             //Query for existing customerDto in db
             var customerInDb = _context.Customers.SingleOrDefault(c => c.Id == id);
 
             //Check for invalid id
             if (customerInDb == null)
-                throw new HttpResponseException(HttpStatusCode.NotFound);
+                return NotFound();
 
             //Mark as removed
             _context.Customers.Remove(customerInDb);
 
             _context.SaveChanges();
+
+            return Ok();
         }
     }
 }
