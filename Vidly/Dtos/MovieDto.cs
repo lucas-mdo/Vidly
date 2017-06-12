@@ -19,5 +19,7 @@ namespace Vidly.Dtos
 
         [Range(1, 20)]
         public byte QuantityInStock { get; set; }
+
+        public GenreDto Genre { get; set; }
     }
 }
