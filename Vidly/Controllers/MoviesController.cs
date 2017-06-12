@@ -23,12 +23,16 @@ namespace Vidly.Controllers
         // GET: Movies
         public ActionResult Index()
         {
+            if (User.IsInRole(RoleName.CanManageMovies))
+                return View("List");
+            
+            return View("ReadOnlyList");
+
             //Eager Loading
-            var movies = _context.Movies.Include(m => m.Genre).ToList();
+            //var movies = _context.Movies.Include(m => m.Genre).ToList();
 
             //Do NOT use ViewData
             //Do NOT use ViewBag
-            return View(movies);
         }
 
         // GET: Movies/Details/{id}
@@ -44,6 +48,7 @@ namespace Vidly.Controllers
             return View(movie);
         }
 
+        [Authorize(Roles = RoleName.CanManageMovies)]
         public ActionResult New()
         {
             //Get genres list from db
@@ -58,6 +63,7 @@ namespace Vidly.Controllers
             return View("MoviesForm", viewModel);
         }
 
+        [Authorize(Roles = RoleName.CanManageMovies)]
         public ActionResult Edit(int id)
         {
             var movie = _context.Movies.SingleOrDefault(m => m.Id == id);
@@ -74,6 +80,7 @@ namespace Vidly.Controllers
             return View("MoviesForm", viewModel);
         }
 
+        [Authorize(Roles = RoleName.CanManageMovies)]
         //Ensure it is only acessible via POST
         [HttpPost]
         //Security measure - Prevent CSRF attacks
