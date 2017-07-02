@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using Vidly.Models;
 
 namespace Vidly.Dtos
 {
