@@ -51,5 +51,9 @@
 
 .tt-suggestion p {
     margin: 0;
-}body {
+
+}
+
+.tt-container {
+    position: relative
 }
